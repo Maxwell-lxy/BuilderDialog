@@ -1,12 +1,8 @@
 package com.yaowang.builderdialog;
 
-import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -18,39 +14,129 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void show(View v) {
+
+
+
+    public void onClick1(View v) {
         DialogBuilder.Builder(this)
-                .content(R.layout.ly_dialog_text_image)
+                .content(R.layout.ly_dialog_textview)
                 .beginConfig()
-                .title("哈哈")
-                .text("请，你还没登录哦")
-                .theme(R.style.dialog_style2)
+                .title("这是标题")
+                .text("这是内容")
+                .theme(R.style.dialog_style1)
                 .ok(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(MainActivity.this, "立即更新", Toast.LENGTH_SHORT).show();
+
                     }
                 })
-                .cancel("暂不更新", new View.OnClickListener() {
+                .cancel(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Toast.makeText(MainActivity.this, "暂不更新", Toast.LENGTH_SHORT).show();
+
                     }
                 })
                 .endConfig()
                 .build();
     }
 
-    public void display(View v) {
-        Dialog dialog = new Dialog(this, R.style.dialog_style1);
-        dialog.setContentView(R.layout.ly_dialog);
-        //样式
-        Window dialogWindow = dialog.getWindow();
-        WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-        DisplayMetrics d = getResources().getDisplayMetrics(); // 获取屏幕宽、高用
-        lp.width = (int) (d.widthPixels * 0.8); // 高度设置为屏幕的0.6
-        dialogWindow.setAttributes(lp);
-        dialog.show();
+    public void onClick2(View v) {
+        DialogBuilder.Builder(this)
+                .content(R.layout.ly_dialog_text_image)
+                .beginConfig()
+                .title("这是标题")
+                .text("这是内容")
+                .theme(R.style.dialog_style1)
+                .ok(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                })
+                .cancel(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                })
+                .endConfig()
+                .build();
+    }
+
+    public void onClick3(View v) {
+        DialogBuilder.Builder(this)
+                .content(R.layout.ly_dialog_custom)
+                .beginConfig()
+                .title("这是标题")
+                .theme(R.style.dialog_style1)
+                .ok(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                })
+                .endConfig()
+                .build();
+    }
+
+    public void onClick4(View v) {
+        DialogBuilder.Builder(this)
+                .content(R.layout.ly_dialog_textview)
+                .beginConfig()
+                .text("带动画的dialog")
+                .title("这是标题")
+                .theme(R.style.dialog_style2)
+                .ok(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                })
+                .endConfig()
+                .build();
+    }
+
+    public void onClick5(View v) {
+        DialogBuilder.Builder(this)
+                .content(R.layout.ly_dialog_textview)
+                .beginConfig()
+                .canceledOnTouchOutside(false)
+                .text("带动画的dialog")
+                .title("这是标题")
+                .theme(R.style.dialog_style2)
+                .ok(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                })
+                .endConfig()
+                .build();
+    }
+
+    public void onClick6(View v) {
+        final DialogBuilder.IDialogBuilder dialogBuilder = DialogBuilder.Builder(this);
+        dialogBuilder.content(R.layout.ly_dialog_textview)
+                .beginConfig()
+                .canceledOnTouchOutside(false)
+                .text("自己处理dismiss")
+                .dismiss(false)
+                .title("这是标题")
+                .theme(R.style.dialog_style2)
+                .ok(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Toast.makeText(MainActivity.this,"点击取消dissmissDialog",Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .cancel(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialogBuilder.dismissDialog();
+                    }
+                })
+                .endConfig()
+                .build();
     }
 
 

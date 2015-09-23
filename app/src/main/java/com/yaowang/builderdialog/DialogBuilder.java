@@ -29,7 +29,7 @@ public class DialogBuilder extends Dialog {
 
     }
 
-    public static IThemeBuilder Builder(Context context) {
+    public static IDialogBuilder Builder(Context context) {
         dialogView = View.inflate(context, R.layout.ly_dialog, null);
 
         return new Builder(dialogView);
@@ -64,21 +64,24 @@ public class DialogBuilder extends Dialog {
 
         IConfigBuilder theme(int styId);
 
-
-        IConfigBuilder dissmiss();
+        IConfigBuilder canceledOnTouchOutside(boolean iscancelable);
+        IConfigBuilder dismiss(boolean isdismiss);
 
         IBuilder endConfig();
     }
 
-    public static interface IThemeBuilder {
+    public static interface IDialogBuilder {
         IConfigBuilder beginConfig();
 
-        IThemeBuilder content(int resId);
+        IDialogBuilder content(int resId);
 
-        IThemeBuilder content(View view);
+        IDialogBuilder content(View view);
+        IDialogBuilder dismissDialog();
     }
 
-    public static class Builder implements IBuilder, IConfigBuilder, IThemeBuilder {
+    public static class Builder implements IBuilder, IConfigBuilder, IDialogBuilder {
+        boolean dismiss = true;
+        boolean cancelable = true;
         Context context;
         int theme;
         String title;
@@ -111,6 +114,7 @@ public class DialogBuilder extends Dialog {
             lp.width = (int) (d.widthPixels * 0.8);
             dialogWindow.setAttributes(lp);
 
+            dialogBuilder.setCanceledOnTouchOutside(cancelable);
             dialogBuilder.show();
             return dialogBuilder;
         }
@@ -198,7 +202,7 @@ public class DialogBuilder extends Dialog {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dissmiss();
+                    dismiss();
                     if (onClickListener != null)
                         onClickListener.onClick(view);
                 }
@@ -214,7 +218,19 @@ public class DialogBuilder extends Dialog {
         }
 
         @Override
-        public IThemeBuilder content(int resId) {
+        public IConfigBuilder canceledOnTouchOutside(boolean iscancelable) {
+            cancelable = iscancelable;
+            return this;
+        }
+
+        @Override
+        public IConfigBuilder dismiss(boolean isdismiss) {
+            this.dismiss = isdismiss;
+            return this;
+        }
+
+        @Override
+        public IDialogBuilder content(int resId) {
             if (resId != -1) {
                 View view = View.inflate(context, resId, null);
                 content(view);
@@ -223,7 +239,7 @@ public class DialogBuilder extends Dialog {
         }
 
         @Override
-        public IThemeBuilder content(View view) {
+        public IDialogBuilder content(View view) {
             contentView = view;
             if (containerView != null && containerView.getChildCount() != 0) {
                 for (int i = 0; i < containerView.getChildCount(); i++) {
@@ -237,12 +253,15 @@ public class DialogBuilder extends Dialog {
         }
 
         @Override
-        public IConfigBuilder dissmiss() {
-            if (dialogBuilder != null && dialogBuilder.isShowing())
+        public IDialogBuilder dismissDialog() {
+            if (dialogBuilder != null && dialogBuilder.isShowing() )
                 dialogBuilder.dismiss();
             return this;
         }
-
+        public void dismiss() {
+            if (dialogBuilder != null && dialogBuilder.isShowing() && dismiss)
+                dialogBuilder.dismiss();
+        }
         @Override
         public IBuilder endConfig() {
             return this;
