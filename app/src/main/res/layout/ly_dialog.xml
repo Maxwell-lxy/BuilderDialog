@@ -6,6 +6,7 @@
               android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/titleLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="#ff9000"
@@ -32,7 +33,7 @@
     </LinearLayout>
 
     <FrameLayout
-        android:id="@+id/containerView"
+        android:id="@+id/containerLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp">
@@ -40,41 +41,43 @@
     </FrameLayout>
 
     <LinearLayout
+        android:id="@+id/bottomLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         android:layout_marginTop="20dp"
-        android:padding="20dp">
+        android:gravity="center_horizontal"
+
+        >
 
         <Button
             android:id="@+id/ok"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginRight="5dp"
-            android:layout_weight="1"
+            android:layout_marginRight="10dp"
             android:background="@drawable/selector_dialog"
             android:gravity="center"
             android:text="确定"
             android:textColor="@color/selector_text_selected"
             android:textSize="16sp"
-            android:visibility="gone"/>
+            />
 
         <Button
             android:id="@+id/cancel"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginLeft="5dp"
-            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
             android:background="@drawable/selector_dialog"
             android:gravity="center"
             android:text="取消"
             android:textColor="@color/selector_text_selected"
             android:textSize="16sp"
-            android:visibility="gone"/>
+            />
 
     </LinearLayout>
+
 
 
 </LinearLayout>

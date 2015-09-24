@@ -50,4 +50,11 @@
         android:onClick="onClick6"
         android:text="dismiss自己处理"/>
 
+    <Button
+
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick7"
+        android:text="分享对话框(位置、隐藏、宽度)"/>
+
 </LinearLayout>

@@ -4,11 +4,13 @@ import android.app.Dialog;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
@@ -23,6 +25,11 @@ import android.widget.TextView;
 public class DialogBuilder extends Dialog {
 
     static View dialogView;
+    static Builder builder;
+    public static final int DEFAULT_WIDTH = -1;
+    public static final int DEFAULT_HIDE = DEFAULT_WIDTH - 1;
+    public static final int BOTTOM_TOP_HIDE = DEFAULT_HIDE - 1;
+    public static final int TOP_HIDE = BOTTOM_TOP_HIDE - 1;
 
     public DialogBuilder(Builder builder) {
         super(builder.context, builder.theme);
@@ -31,8 +38,8 @@ public class DialogBuilder extends Dialog {
 
     public static IDialogBuilder Builder(Context context) {
         dialogView = View.inflate(context, R.layout.ly_dialog, null);
-
-        return new Builder(dialogView);
+        builder = new Builder(dialogView);
+        return builder;
     }
 
 
@@ -67,6 +74,13 @@ public class DialogBuilder extends Dialog {
         IConfigBuilder canceledOnTouchOutside(boolean iscancelable);
         IConfigBuilder dismiss(boolean isdismiss);
 
+
+        IConfigBuilder gravity(int gravity);
+
+        IConfigBuilder width(int width);
+
+        IConfigBuilder hide(int hide);
+
         IBuilder endConfig();
     }
 
@@ -82,13 +96,18 @@ public class DialogBuilder extends Dialog {
     public static class Builder implements IBuilder, IConfigBuilder, IDialogBuilder {
         boolean dismiss = true;
         boolean cancelable = true;
+        int gravity = Gravity.CENTER;
+        int width = DialogBuilder.DEFAULT_WIDTH;
+        int hide = DialogBuilder.DEFAULT_HIDE;
         Context context;
         int theme;
         String title;
         TextView text;
         View dialogView;
         TextView titleView;
-        FrameLayout containerView;
+        FrameLayout containerLayout;
+        LinearLayout titleLayout;
+        LinearLayout bottomLayout;
         View contentView;
         Button okButton;
         Button cancelButton;
@@ -101,7 +120,12 @@ public class DialogBuilder extends Dialog {
             titleView = (TextView) dialogView.findViewById(R.id.title);
             okButton = (Button) dialogView.findViewById(R.id.ok);
             cancelButton = (Button) dialogView.findViewById(R.id.cancel);
-            containerView = (FrameLayout) dialogView.findViewById(R.id.containerView);
+            containerLayout = (FrameLayout) dialogView.findViewById(R.id.containerLayout);
+            titleLayout = (LinearLayout) dialogView.findViewById(R.id.titleLayout);
+            bottomLayout = (LinearLayout) dialogView.findViewById(R.id.bottomLayout);
+
+            okButton.setVisibility(View.GONE);
+            cancelButton.setVisibility(View.GONE);
         }
 
         @Override
@@ -111,12 +135,34 @@ public class DialogBuilder extends Dialog {
             Window dialogWindow = dialogBuilder.getWindow();
             WindowManager.LayoutParams lp = dialogWindow.getAttributes();
             DisplayMetrics d = context.getResources().getDisplayMetrics();
-            lp.width = (int) (d.widthPixels * 0.8);
-            dialogWindow.setAttributes(lp);
+            lp.width = width == DialogBuilder.DEFAULT_WIDTH ? (int) (d.widthPixels * 0.8) : width;
 
+            dialogWindow.setGravity(gravity);
             dialogBuilder.setCanceledOnTouchOutside(cancelable);
+            handleHide();
+            dialogWindow.setAttributes(lp);
             dialogBuilder.show();
             return dialogBuilder;
+        }
+
+        private void handleHide() {
+            switch (hide) {
+                case DialogBuilder.DEFAULT_HIDE:
+                    titleLayout.setVisibility(View.VISIBLE);
+                    bottomLayout.setVisibility(View.VISIBLE);
+                    containerLayout.setVisibility(View.VISIBLE);
+                    break;
+                case DialogBuilder.BOTTOM_TOP_HIDE:
+                    titleLayout.setVisibility(View.GONE);
+                    bottomLayout.setVisibility(View.GONE);
+                    containerLayout.setVisibility(View.VISIBLE);
+                    break;
+                case DialogBuilder.TOP_HIDE:
+                    titleLayout.setVisibility(View.GONE);
+                    bottomLayout.setVisibility(View.VISIBLE);
+                    containerLayout.setVisibility(View.VISIBLE);
+                    break;
+            }
         }
 
         @Override
@@ -229,6 +275,23 @@ public class DialogBuilder extends Dialog {
             return this;
         }
 
+        public IConfigBuilder gravity(int gravity) {
+            this.gravity = gravity;
+            return this;
+        }
+
+        @Override
+        public IConfigBuilder width(int width) {
+            this.width = width;
+            return this;
+        }
+
+        @Override
+        public IConfigBuilder hide(int hide) {
+            this.hide = hide;
+            return this;
+        }
+
         @Override
         public IDialogBuilder content(int resId) {
             if (resId != -1) {
@@ -241,13 +304,13 @@ public class DialogBuilder extends Dialog {
         @Override
         public IDialogBuilder content(View view) {
             contentView = view;
-            if (containerView != null && containerView.getChildCount() != 0) {
-                for (int i = 0; i < containerView.getChildCount(); i++) {
-                    containerView.removeViewAt(i);
+            if (containerLayout != null && containerLayout.getChildCount() != 0) {
+                for (int i = 0; i < containerLayout.getChildCount(); i++) {
+                    containerLayout.removeViewAt(i);
                 }
             }
-            if (containerView.getChildCount() == 0 && view != null) {
-                containerView.addView(view);
+            if (containerLayout.getChildCount() == 0 && view != null) {
+                containerLayout.addView(view);
             }
             return this;
         }
