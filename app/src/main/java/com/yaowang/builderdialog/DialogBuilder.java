@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -72,6 +73,7 @@ public class DialogBuilder extends Dialog {
         IConfigBuilder theme(int styId);
 
         IConfigBuilder canceledOnTouchOutside(boolean iscancelable);
+
         IConfigBuilder dismiss(boolean isdismiss);
 
 
@@ -80,6 +82,9 @@ public class DialogBuilder extends Dialog {
         IConfigBuilder width(int width);
 
         IConfigBuilder hide(int hide);
+
+        IConfigBuilder margin(int bottomMargin);
+        IConfigBuilder padding(int contentPadding);
 
         IBuilder endConfig();
     }
@@ -90,6 +95,7 @@ public class DialogBuilder extends Dialog {
         IDialogBuilder content(int resId);
 
         IDialogBuilder content(View view);
+
         IDialogBuilder dismissDialog();
     }
 
@@ -112,6 +118,8 @@ public class DialogBuilder extends Dialog {
         Button okButton;
         Button cancelButton;
         DialogBuilder dialogBuilder;
+        int padding = 20;
+        int margin = 20;
 
 
         Builder(View dialogView) {
@@ -124,8 +132,21 @@ public class DialogBuilder extends Dialog {
             titleLayout = (LinearLayout) dialogView.findViewById(R.id.titleLayout);
             bottomLayout = (LinearLayout) dialogView.findViewById(R.id.bottomLayout);
 
+            setContainerLayoutPadding(padding);
+            setBottomLayoutMargin(margin);
+
             okButton.setVisibility(View.GONE);
             cancelButton.setVisibility(View.GONE);
+        }
+
+        private void setBottomLayoutMargin(int margin) {
+            LinearLayout.LayoutParams bottomParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            bottomParams.setMargins(0, 0, 0, margin);
+            bottomLayout.setLayoutParams(bottomParams);
+        }
+
+        private void setContainerLayoutPadding(int padding) {
+            containerLayout.setPadding(padding, padding, padding, padding);
         }
 
         @Override
@@ -293,6 +314,20 @@ public class DialogBuilder extends Dialog {
         }
 
         @Override
+        public IConfigBuilder margin(int bottomMargin) {
+            this.margin = bottomMargin;
+            setBottomLayoutMargin(margin);
+            return this;
+        }
+
+        @Override
+        public IConfigBuilder padding(int contentPadding) {
+            this.padding = contentPadding;
+            setContainerLayoutPadding(padding);
+            return this;
+        }
+
+        @Override
         public IDialogBuilder content(int resId) {
             if (resId != -1) {
                 View view = View.inflate(context, resId, null);
@@ -317,14 +352,16 @@ public class DialogBuilder extends Dialog {
 
         @Override
         public IDialogBuilder dismissDialog() {
-            if (dialogBuilder != null && dialogBuilder.isShowing() )
+            if (dialogBuilder != null && dialogBuilder.isShowing())
                 dialogBuilder.dismiss();
             return this;
         }
+
         public void dismiss() {
             if (dialogBuilder != null && dialogBuilder.isShowing() && dismiss)
                 dialogBuilder.dismiss();
         }
+
         @Override
         public IBuilder endConfig() {
             return this;

@@ -16,8 +16,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
-
     public void onClick1(View v) {
         DialogBuilder.Builder(this)
                 .content(R.layout.ly_dialog_textview)
@@ -151,12 +149,33 @@ public class MainActivity extends AppCompatActivity {
                 .cancel(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                       dialogBuilder.dismissDialog();
+                        dialogBuilder.dismissDialog();
                     }
                 })
                 .gravity(Gravity.BOTTOM)
                 .hide(DialogBuilder.DEFAULT_HIDE)
                 .width(DisplayUtil.getScreenWidth(this))
+                .endConfig()
+                .build();
+    }
+
+    public void onClick8(View v) {
+        final DialogBuilder.IDialogBuilder dialogBuilder = DialogBuilder.Builder(this);
+        dialogBuilder.content(R.layout.ly_dialog_text_image)
+                .beginConfig()
+                .canceledOnTouchOutside(true)
+                .dismiss(false)
+                .title("温馨提示")
+                .text("支持margin和padding")
+                .theme(R.style.dialog_style3)
+                .cancel(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialogBuilder.dismissDialog();
+                    }
+                })
+                .margin(60)
+                .padding(60)
                 .endConfig()
                 .build();
     }

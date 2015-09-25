@@ -51,10 +51,15 @@
         android:text="dismiss自己处理"/>
 
     <Button
-
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="onClick7"
         android:text="分享对话框(位置、隐藏、宽度)"/>
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onClick8"
+        android:text="支持内容padding和底部margin"/>
 
 </LinearLayout>
